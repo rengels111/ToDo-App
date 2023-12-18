@@ -3,28 +3,26 @@ package com.engelsit.restapp;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ToDoController {
 
-    @GetMapping("/greet")
-    public ResponseEntity<String> hello(@RequestParam(value = "name") String name) {
+    @GetMapping("/todo")
+    public ResponseEntity<ToDo> get(@RequestParam(value = "id") int id) {
 
-        if (name.equals("admin")) {
-            return new ResponseEntity<String>("Hello " + name, HttpStatus.OK );
-        }
+        ToDo newToDo = new ToDo();
+        newToDo.setId(id);
+        newToDo.setDescription("Einkaufen");
+        newToDo.setIsDone(true);
 
-        return new ResponseEntity<String>("Error", HttpStatus.BAD_REQUEST);
-
+        return new ResponseEntity<ToDo>(newToDo, HttpStatus.OK);
     }
 
     @PostMapping("/todo")
-    public ResponseEntity<ToDo> create() {
-        return null;
+    public ResponseEntity<ToDo> create(@RequestBody ToDo newToDo) {
+        // save todo in db
+        return new ResponseEntity<ToDo>(newToDo, HttpStatus.OK);
     }
 }
 
