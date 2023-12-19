@@ -1,4 +1,4 @@
-package com.engelsit.restapp;
+package com.engelsit.restapp.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
