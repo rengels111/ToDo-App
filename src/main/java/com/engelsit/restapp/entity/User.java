@@ -2,11 +2,13 @@ package com.engelsit.restapp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(unique = true, nullable = false)
@@ -14,6 +16,10 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany  // User has many ToDos
+    @JoinColumn(name = "userId")  // connects both SQL tables
+    private Set<ToDo> todos;
 
     public Integer getId() {
         return id;
@@ -37,5 +43,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<ToDo> getTodos() {
+        return todos;
+    }
+
+    public void setTodos(Set<ToDo> todos) {
+        this.todos = todos;
     }
 }
