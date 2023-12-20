@@ -4,9 +4,9 @@ import com.engelsit.restapp.entity.User;
 import com.engelsit.restapp.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -19,7 +19,17 @@ public class UserController {
 
     @PostMapping("/register")
     private ResponseEntity<User> register(@RequestBody User newUser) {
-        userRepository.save(newUser);
-        return null;
+        var registeredUser = userRepository.save(newUser);
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/user")
+    private ResponseEntity<User> getUser(@RequestParam(value = "id") int id) {
+        Optional<User> userInDb = userRepository.findById(id);
+
+        if (userInDb.isPresent()) {
+            return new ResponseEntity<>(userInDb.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity("User not found with id " + id, HttpStatus.NOT_FOUND);
     }
 }
