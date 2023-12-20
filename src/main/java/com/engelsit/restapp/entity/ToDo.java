@@ -1,9 +1,6 @@
 package com.engelsit.restapp.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity  // annotation for jpa, hibernate, sql
 public class ToDo {
@@ -11,7 +8,11 @@ public class ToDo {
     @Id  // This is the unique id for the sql database.
     @GeneratedValue(strategy = GenerationType.AUTO)  // id will be automatically raised by one.
     private Integer id;
+
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
     private boolean isDone;
 
     public Integer getId() {
