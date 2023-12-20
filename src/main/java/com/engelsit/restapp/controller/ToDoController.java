@@ -36,7 +36,8 @@ public class ToDoController {
     }
 
     @PostMapping("/todo")
-    public ResponseEntity<ToDo> create(@RequestBody ToDo newToDo) {
+    public ResponseEntity<ToDo> create(@RequestBody ToDo newToDo) {  // RequestBody instead of Param: information via
+        // JSON in body, so we can place more individual information than as parameter.
         // save ToDo in db
         toDoRepository.save(newToDo);
         return new ResponseEntity<>(newToDo, HttpStatus.CREATED);
