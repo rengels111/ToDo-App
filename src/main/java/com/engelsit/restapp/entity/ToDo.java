@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class ToDo {
 
     @Id  // This is the unique id for the sql database.
-    @GeneratedValue(strategy = GenerationType.AUTO)  // id will be automatically raised by one.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false)
@@ -14,6 +14,9 @@ public class ToDo {
 
     @Column(nullable = false)
     private boolean isDone;
+
+    @Column(nullable = false)
+    private Integer userId;
 
     public Integer getId() {
         return this.id;
@@ -37,5 +40,13 @@ public class ToDo {
 
     public void setIsDone(boolean isDone) {
         this.isDone = isDone;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }
