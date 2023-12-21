@@ -1,5 +1,6 @@
 package com.engelsit.restapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -20,6 +21,8 @@ public class User {
     @OneToMany  // User has many ToDos
     @JoinColumn(name = "userId")  // connects both SQL tables
     private Set<ToDo> todos;
+
+    private String secretKey;
 
     public Integer getId() {
         return id;
@@ -51,5 +54,14 @@ public class User {
 
     public void setTodos(Set<ToDo> todos) {
         this.todos = todos;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    @JsonIgnore  // to not be able to set a new secretKey via JSON
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 }
