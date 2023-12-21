@@ -2,6 +2,7 @@ package com.engelsit.restapp.controller;
 
 import com.engelsit.restapp.entity.ToDo;
 import com.engelsit.restapp.repository.ToDoRepository;
+import com.engelsit.restapp.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,11 @@ import java.util.Optional;
 public class ToDoController {
 
     private final ToDoRepository toDoRepository;
+    private final UserRepository userRepository;
 
-    public ToDoController(ToDoRepository toDoRepository) {  // Constructor Injection better than Field Injection.
+    public ToDoController(ToDoRepository toDoRepository, UserRepository userRepository) {  // Constructor Injection better than Field Injection.
         this.toDoRepository = toDoRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/todo")
@@ -29,18 +32,25 @@ public class ToDoController {
     }
 
     @GetMapping("/todo/all")
-    public ResponseEntity<Iterable<ToDo>> getAll() {
-        Iterable<ToDo> allToDos = toDoRepository.findAll();
+    public ResponseEntity<Iterable<ToDo>> getAll(@RequestHeader("api-secret") String secretKey) {
+        var userBySecretKey = userRepository.findBySecretKey(secretKey);
 
-        return new ResponseEntity<>(allToDos, HttpStatus.OK);
+        if (userBySecretKey.isPresent()) {
+            Iterable<ToDo> allToDos = toDoRepository.findAllByUserId(userBySecretKey.get().getId());
+            return new ResponseEntity<>(allToDos, HttpStatus.OK);
+        }
+        return new ResponseEntity("Invalid API secret", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/todo")
-    public ResponseEntity<ToDo> create(@RequestBody ToDo newToDo) {  // RequestBody instead of Param: information via
-        // JSON in body, so we can place more individual information than as parameter.
-        // save ToDo in db
-        toDoRepository.save(newToDo);
-        return new ResponseEntity<>(newToDo, HttpStatus.CREATED);
+    public ResponseEntity<ToDo> create(@RequestBody ToDo newToDo, @RequestHeader("api-secret") String secretKey) {  // RequestBody instead of Param: information via
+        var userBySecretKey = userRepository.findBySecretKey(secretKey);
+
+        if (userBySecretKey.isPresent()) {
+            toDoRepository.save(newToDo);
+            return new ResponseEntity<>(newToDo, HttpStatus.CREATED);
+        }
+        return new ResponseEntity("Invalid API secret", HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/todo")
